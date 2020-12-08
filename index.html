@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Survey Form</title>
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Learn the skills needed for your next job</h1>
+      <p>You want to land a new job as developer and don't have the skills required for it? Don't worry and take
+        one of our classes and get accepted for the new job. Fill in this little survey and we send you the
+        classes you need for it.</p>
+    </header>
+    <form id="survey-form">
+      <div class="form-section">
+        <h2>Your personal details</h2>
+        <div class="form-group">
+          <div>
+            <label id="name-label" for="name">First name</label>
+            <input class="form-control" type="text" name="name" id="name" placeholder="Enter your first name" size="40" required>
+          </div>
+          <div>
+            <label for="last-name">Last name</label>
+            <input class="form-control" type="text" name="last-name" id="last-name" placeholder="Enter your last name" size="40" required>
+          </div>
+          <div>
+            <label id="email-label" for="email">Email</label>
+            <input class="form-control" type="email" name="email" id="email" placeholder="Enter your email" size="40" required>
+          </div>
+          <div>
+            <label id="number-label" for="age">Age</label>
+            <input class="form-control" type="number" name="age" id="age" placeholder="age" min="1" max="100">
+          </div>
+          <div>
+            <label for="gender">Gender</label>
+            <select class="form-control" name="gender" id="dropdown">
+              <option disabled selected hidden>Choose</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="form-section">
+        <h2>Your current role</h2>
+        <div class="form-group">
+          <label><input type="radio" name="role" value="interaction">Interaction designer</label>
+          <label><input type="radio" name="role" value="product">Product designer</label>
+          <label><input type="radio" name="role" value="ui">UI designer</label>
+          <label><input type="radio" name="role" value="ux">UX designer</label>
+          <label><input type="radio" name="role" value="ui-ux">UI/UX designer</label>
+          <label><input type="radio" name="role" value="visual">Visual designer</label>
+          <label><input type="radio" name="role" value="web">Web designer</label>
+        </div>
+      </div>
+      <div class="form-section">
+        <h2>Your future skills</h2>
+        <div class="form-group">
+          <label><input type="checkbox" name="skill" value="css">CSS</label>
+          <label><input type="checkbox" name="skill" value="html">HTML</label>
+          <label><input type="checkbox" name="skill" value="java">Java</label>
+          <label><input type="checkbox" name="skill" value="javascript">JavaScript</label>
+          <label><input type="checkbox" name="skill" value="php">PHP</label>
+          <label><input type="checkbox" name="skill" value="python">Python</label>
+        </div>
+      </div>
+      <div class="form-section">
+        <h2>Introduce yourself</h2>
+        <textarea name="introduce" id="introduce" cols="80" rows="20" placeholder="Your information"></textarea>
+      </div>
+      <div class="form-section">
+        <button class="submit-button" type="submit" id="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+
+</body>
+
+</html>
