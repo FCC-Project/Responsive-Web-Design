@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>TypeScript Generics</title>
+</head>
+
+<body>
+    <nav id="navbar">
+        <header>Generics</header>
+        <ul>
+            <li><a class="nav-link" href="#hello_world_of_generics">Hello World of Generics</a></li>
+            <li><a class="nav-link" href="#working_with_generic_type_variables">Working with Generic Type Variables</a>
+            </li>
+            <li><a class="nav-link" href="#generic_types">Generic Types</a></li>
+            <li><a class="nav-link" href="#generic_classes">Generic Classes</a></li>
+            <li><a class="nav-link" href="#generic_constraints">Generic Constraints</a></li>
+            <li><a class="nav-link" href="#using_type_parameters_in_generic_constraints">Using Type Parameters in
+                    Generic Constraints</a></li>
+            <li><a class="nav-link" href="#using_class_types_in_generics">Using Class Types in Generics</a></li>
+            <li><a class="nav-link"href="#other">Other</a></li>
+        </ul>
+    </nav>
+    <main id="main-doc">
+        <section class="main-section" id="hello_world_of_generics">
+            <header>Hello World of Generics</header>
+            <article>
+                <p>To start off, let’s do the “hello world” of generics: the identity function. The identity function is
+                    a function that will return back whatever is passed in. You can think of this in a similar way to
+                    the echo command.</p>
+                <p>Without generics, we would either have to give the identity function a specific type:</p>
+                <code>function identity(arg: number): number {
+                        return arg;
+                  }</code>
+                <p>Or, we could describe the identity function using the any type:</p>
+                <code>function identity(arg: any): any {
+                    return arg;
+                  }</code>
+                <p>While using any is certainly generic in that it will cause the function to accept any and all types
+                    for the type of arg, we actually are losing the information about what that type was when the
+                    function returns. If we passed in a number, the only information we have is that any type could be
+                    returned.</p>
+                <p>Instead, we need a way of capturing the type of the argument in such a way that we can also use it to
+                    denote what is being returned. Here, we will use a type variable, a special kind of variable that
+                    works on types rather than values. </p>
+                <code>function identity&lt;T&gt;(arg: T): T {
+                    return arg;
+                  }</code>
+            </article>
+        </section>
+        <section class="main-section" id="working_with_generic_type_variables">
+            <header>Working with Generic Type Variables</header>
+            <article>
+                <p>When you begin to use generics, you’ll notice that when you create generic functions like identity,
+                    the compiler will enforce that you use any generically typed parameters in the body of the function
+                    correctly. That is, that you actually treat these parameters as if they could be any and all types.
+                </p>
+                <p>Let’s take our identity function from earlier: </p>
+                <code>function identity&lt;T&gt;(arg: T): T {
+                    return arg;
+                  }</code>
+                <p>When we do, the compiler will give us an error that we’re using the .length member of arg, but
+                    nowhere have we said that arg has this member. Remember, we said earlier that these type variables
+                    stand in for any and all types, so someone using this function could have passed in a number
+                    instead, which does not have a .length member.</p>
+                <code>function loggingIdentity&lt;T&gt;(arg: T[]): T[] {
+                    console.log(arg.length);
+                    return arg;
+                  }</code>
+            </article>
+        </section>
+        <section class="main-section" id="generic_types">
+            <header>Generic Types</header>
+            <article>
+                <p>In previous sections, we created generic identity functions that worked over a range of types. In
+                    this section, we’ll explore the type of the functions themselves and how to create generic
+                    interfaces.</p>
+                <p>The type of generic functions is just like those of non-generic functions, with the type parameters
+                    listed first, similarly to function declarations:</p>
+                <code>function identity&lt;T&gt;(arg: T): T {
+                    return arg;
+                  }
+                  
+                  let myIdentity: &lt;T&gt;(arg: T) => T = identity;</code>
+                <p>We could also have used a different name for the generic type parameter in the type, so long as the
+                    number of type variables and how the type variables are used line up. </p>
+                <code>function identity&lt;T&gt;(arg: T): T {
+                    return arg;
+                  }
+                  
+                  let myIdentity: &lt;U&gt;(arg: U) => U = identity;</code>
+                <p>Notice that our example has changed to be something slightly different. Instead of describing a
+                    generic function, we now have a non-generic function signature that is a part of a generic type.
+                    When we use GenericIdentityFn, we now will also need to specify the corresponding type argument
+                    (here: number), effectively locking in what the underlying call signature will use. Understanding
+                    when to put the type parameter directly on the call signature and when to put it on the interface
+                    itself will be helpful in describing what aspects of a type are generic.</p>
+            </article>
+        </section>
+        <section class="main-section" id="generic_classes">
+            <header>Generic Classes</header>
+            <article>
+                <p>A generic class has a similar shape to a generic interface. Generic classes have a generic type
+                    parameter list in angle brackets (<>) following the name of the class.</p>
+                <code>class GenericNumber&lt;T&gt; {
+                    zeroValue: T;
+                    add: (x: T, y: T) => T;
+                  }
+                  
+                  let myGenericNumber = new GenericNumber&lt;number&gt;();
+                  myGenericNumber.zeroValue = 0;
+                  myGenericNumber.add = function (x, y) {
+                    return x + y;
+                  };</code>
+            </article>
+        </section>
+        <section class="main-section" id="generic_constraints">
+            <header>Generic Constraints</header>
+            <article>
+                <p>If you remember from an earlier example, you may sometimes want to write a generic function that
+                    works on a set of types where you have some knowledge about what capabilities that set of types will
+                    have. In our loggingIdentity example, we wanted to be able to access the .length property of arg,
+                    but the compiler could not prove that every type had a .length property, so it warns us that we
+                    can’t make this assumption.</p>
+                <p>nstead of working with any and all types, we’d like to constrain this function to work with any and
+                    all types that also have the .length property. As long as the type has this member, we’ll allow it,
+                    but it’s required to have at least this member. To do so, we must list our requirement as a
+                    constraint on what T can be.</p>
+                <code>interface Lengthwise {
+                    length: number;
+                  }
+                  
+                  function loggingIdentity&lt;T extends Lengthwise&gt;(arg: T): T {
+                    console.log(arg.length); // Now we know it has a .length property, so no more error
+                    return arg;
+                  }</code>
+            </article>
+        </section>
+        <section class="main-section" id="using_type_parameters_in_generic_constraints">
+            <header>Using Type Parameters in Generic Constraints</header>
+            <article>
+                <p>You can declare a type parameter that is constrained by another type parameter. For example, here
+                    we’d like to get a property from an object given its name. We’d like to ensure that we’re not
+                    accidentally grabbing a property that does not exist on the obj, so we’ll place a constraint between
+                    the two types:</p>
+                <code>
+                  function getProperty&lt;T, K extends keyof T&gt;(obj: T, key: K) {
+                    return obj[key];
+                  }
+                  
+                  let x = { a: 1, b: 2, c: 3, d: 4 };
+                  
+                  getProperty(x, "a");
+                  getProperty(x, "m");
+                </code>
+            </article>
+        </section>
+        <section class="main-section" id="using_class_types_in_generics">
+            <header>Using Class Types in Generics</header>
+            <article>
+                <p>A more advanced example uses the prototype property to infer and constrain relationships between the
+                    constructor function and the instance side of class types. </p>
+                <code>
+                    class BeeKeeper {
+                        hasMask: boolean;
+                      }
+                      
+                      class ZooKeeper {
+                        nametag: string;
+                      }
+                      
+                      class Animal {
+                        numLegs: number;
+                      }
+                      
+                      class Bee extends Animal {
+                        keeper: BeeKeeper;
+                      }
+                      
+                      class Lion extends Animal {
+                        keeper: ZooKeeper;
+                      }
+                      
+                      function createInstance&lt;A extends Animal&gt;(c: new () => A): A {
+                        return new c();
+                      }
+                      
+                      createInstance(Lion).keeper.nametag;
+                      createInstance(Bee).keeper.hasMask;
+                </code>
+            </article>
+        </section>
+        <section class="main-section" id="other">
+            <header>Other</header>
+            <article>
+                <ul>
+                    <li>Basic Types</li>
+                    <li>Interfaces</li>
+                    <li>Functions</li>
+                    <li>Literal Types</li>
+                    <li>Unions and intersection Types</li>
+                    <li>Classes</li>
+                    <li>Enums</li>
+                </ul>
+            </article>
+        </section>
+    </main>
+</body>
+
+</html>
